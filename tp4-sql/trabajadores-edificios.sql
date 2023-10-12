@@ -109,24 +109,30 @@ WHERE tipo <> 'residencia'
  12 euros?
  */
 
- --DML
-* 
-trabajador <legajo PK FK, nombre, tarifa, oficio, legajo_supv>
-edificio   <id_e PK , dir, tipo, nivel_calidad, categoria>
-asignacion <FK legajo PK FK, id_e PK FK , fecha_inicio, num_dias>
+
+--enie)
+SELECT s.legajo AS supervisor_legajo, s.nombre AS supervisor_nombre , t.nombre AS trabajador_nombre , t.tarifa AS trabajador_tarifa
+FROM trabajador t JOIN trabajador s
+ON t.legajo_supv = s.legajo
+WHERE t.tarifa > 12;
 
 
-(m) Qué trabajadores reciben una tarifa por hora menor que la del promedio de los traba-
-jadores que dependen del mismo supervisor que él?
+--n)
+    SELECT t.nombre, a.fecha_inicio
+    FROM trabajador t 
+    JOIN asignacion a
+    ON t.legajo = a.legajo
+    WHERE a.id_e = 435;
 
-(n) Seleccione el nombre de los electricistas asignados al edificio 435 y la fecha en la que
-empezaron a trabajar en él.
+    Qué trabajadores reciben una tarifa por hora menor que la del promedio de los trabajadores que dependen del mismo supervisor que él?
+    -- junto a los trabajadores que dependen de un mismo supervisor, con sus tarifas.
+    -- de ahi, saco su promedio y, 
+    -- devuelvo los que ganan menos que el promedio.
 
-(ñ) 
-Qué supervisores tienen trabajadores que tienen una tarifa por hora por encima de los
-12 euros?
+--m) 
 
-
+SELECT DISTINCT t.nombre AS trabajador_que_gana_menos, t.tarifa
+FROM trabajador t GROUP BY t.nombre, t.tarifa HAVING t.tarifa < ( SELECT AVG(t1.tarifa) FROM trabajador t1 JOIN trabajador t2 ON t1.legajo_supv = t2.legajo_supv AND t1.legajo <> t2.legajo );
 
 --l)
 
@@ -140,8 +146,8 @@ SELECT t1.legajo FROM trabajador t1 GROUP BY t1.legajo HAVING t1.tarifa < (SELEC
 
 SELECT DISTINCT e.tipo, AVG(nivel_calidad) AS nivel_de_calidad_promedio FROM edificio e WHERE categoria = 1 GROUP BY e.tipo ;
 
---i) ??
- 
+--i) 
+
 
 --h) ??
 
@@ -164,7 +170,6 @@ GROUP BY a.id_e;
 --e) 
 SELECT t1.legajo, t1.nombre 
 FROM trabajador t1 JOIN trabajador t2 ON t1.legajo_supv = t2.legajo AND t1.tarifa > t2.tarifa;
-
 
 --d)
 SELECT DISTINCT t.nombre 
