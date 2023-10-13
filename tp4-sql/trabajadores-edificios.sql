@@ -17,44 +17,6 @@
  (f) Elimine los edificios que son residencias.
  */
 
---a)
-ALTER TABLE trabajador ADD COLUMN edad INT;
-
---b)
-
-ALTER TABLE edificio ADD COLUMN ciudad VARCHAR(55);
-
---c)
-
-UPDATE asignaciones
-SET num_dias = num_dias + 4 
-
---d)
-
-UPDATE edificio
-SET nivel_calidad = 5
-WHERE tipo = 'oficina' AND nivel_calidad = 4;
-
---e)
-DELETE trabajador
-WHERE oficio = 'plomero';
-
-
---f)
-
-(f) Elimine los edificios que son residencias.
-
-DELETE FROM asignacion
-WHERE id_e IN 
-(SELECT id_e
-    FROM edificio
-    WHERE tipo <> 'residencia'
-);
-
-DELETE FROM edificio
-WHERE tipo <> 'residencia' 
-
-
  --DML
 
 /* 
@@ -109,6 +71,49 @@ WHERE tipo <> 'residencia'
  12 euros?
  */
 
+
+--DDL
+
+--a)
+ALTER TABLE trabajador ADD COLUMN edad INT;
+
+--b)
+
+ALTER TABLE edificio ADD COLUMN ciudad VARCHAR(55);
+
+--c)
+
+UPDATE asignaciones
+SET num_dias = num_dias + 4 
+
+--d)
+
+UPDATE edificio
+SET nivel_calidad = 5
+WHERE tipo = 'oficina' AND nivel_calidad = 4;
+
+--e)
+DELETE trabajador
+WHERE oficio = 'plomero';
+
+
+--f)
+
+(f) Elimine los edificios que son residencias.
+
+DELETE FROM asignacion
+WHERE id_e IN 
+(SELECT id_e
+    FROM edificio
+    WHERE tipo <> 'residencia'
+);
+
+DELETE FROM edificio
+WHERE tipo <> 'residencia' 
+
+
+
+-- DML
 
 --enie)
 SELECT s.legajo AS supervisor_legajo, s.nombre AS supervisor_nombre , t.nombre AS trabajador_nombre , t.tarifa AS trabajador_tarifa
