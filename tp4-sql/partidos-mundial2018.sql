@@ -73,17 +73,44 @@ tarjetas rojas.
     SELECT selecciones_y_jugadores.nombreseleccion 
     FROM (seleccion s NATURAL JOIN jugadordeseleccion ) AS selecciones_y_jugadores 
     JOIN gol g 
-    ON g. 
-
+    ON g.nombregoleador = selecciones_y_jugadores.nombre
+    WHERE selecciones_y_jugadores.posicion ILIKE 'defensor' 
+    OR selecciones_y_jugadores.posicion ILIKE 'arquero'
+    OR selecciones_y_jugadores.posicionauxiliar ILIKE 'defensor'
+    OR selecciones_y_jugadores.posicionauxiliar ILIKE 'arquero'; 
 
 
 (e) Obtener los nombres de jugadores expulsados por doble amarilla.
 
+    SELECT ta.nombreamonestado 
+    FROM tarjetaamarilla ta 
+    GROUP BY ta.nombreamonestado
+    HAVING COUNT(ta.nombreamonestado) >= 2
 
-
+        INTERSECT
+    
+    SELECT tr.nombreamonestado 
+    FROM tarjetaamarilla tr;
 
 
 (f) Obtener la tabla de equipos ordenados de mayor a menor de acuerdo a la cantidad de
 goles que convirtieron. La tabla resultante debe tener 2 columnas con el nombre del
 seleccionado y la cantidad de goles convertidos.
+
+SELECT selecciones_y_goles.nombreseleccion, COUNT(selecciones_y_goles.idpartido) AS goles_totales
+FROM (   
+        SELECT * 
+            FROM 
+                seleccion 
+                    JOIN 
+                partido 
+            ON  nombreseleccion  = equipolocal OR  nombreseleccion  = equipovisitante
+                
+        NATURAL JOIN gol g 
+        ) AS selecciones_y_goles 
+
+GROUP BY selecciones_y_goles.nombreseleccion        
+
+ORDER BY goles_totales DESC;
+
 
