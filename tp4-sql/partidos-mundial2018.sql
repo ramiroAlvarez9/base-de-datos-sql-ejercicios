@@ -81,8 +81,16 @@ FROM   tarjetaroja tr;
     ON     g.nombregoleador = js.nombre 
     WHERE  js.posicion ILIKE 'defensa' OR js.posicion ILIKE 'arquero';
 
+tarjeta_amarilla <id_partido: INT PK FK,
+nombre_amonestado: VARCHAR(35) PK FK, minuto: INT PK>
+
 (e) Obtener los nombres de jugadores expulsados por doble amarilla.
-    
+    SELECT 
+        nombreamonestado
+    FROM 
+        tarjetaamarilla
+    GROUP BY nombreamonestado
+    HAVING COUNT(*) >= 2;
 
 
 

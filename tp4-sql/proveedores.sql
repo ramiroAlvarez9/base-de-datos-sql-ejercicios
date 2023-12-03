@@ -85,8 +85,6 @@ h)
                     articulos 
                 WHERE 
                     ciudad ILIKE 'la plata'
-
-
             );
         
     DELETE FROM 
@@ -132,6 +130,11 @@ artículo de Capital Federal.
 los proveedores que suministran para un artículo
 de La Plata o Capital Federal un componente Rojo.
 
+(i) Seleccionar el id_prov 
+de los proveedores que nunca suministraron un componente verde.
+
+
+
 PROVEEDORES
 <id_prov PK, prov_nombre, categoria, ciudad>
 
@@ -145,25 +148,23 @@ ENVIOS
 <id_prov PK FK, id_comp PK FK, id_art PK FK, cantidad>
 
 
-(i) Seleccionar el id_prov 
-de los proveedores que nunca suministraron un componente verde.
-
 (j) Obtener, para los envíos del proveedor P2, 
-el número de suministros realizado de artículos distintos suministrados y la cantidad total.
+el número de suministros realizado de artículos distintos suministrados 
+y la cantidad total.
 
 (k) Obtener la cantidad máxima suministrada en un mismo envío, para cada proveedor.
 
 (l) 
     Para cada artículo y componente 
-    
     suministrado obtener los valores de id_comp, id_art
-    
     y la cantidad total correspondiente.
 
 
-(m) Seleccionar los nombres de los componentes que son suministrados 
-en una cantidad
-total superior a 500.
+(m) Seleccionar los nombres de los 
+
+    componentes que son suministrados  en una cantidad
+    
+    total superior a 500.
 
 (n) Obtener los identificadores de artículos, 
 id_art,
@@ -171,32 +172,26 @@ para los que se ha suministrado algún
 componente del que se haya suministrado una media superior 
 a 420 artículos.
 
-(ñ) Seleccionar los identificadores de proveedores que hayan realizado algún envío con
-cantidad mayor que la media de los envíos realizados para el componente a que corresponda 
-dicho envío.
+(ñ) Seleccionar los identificadores de proveedores que hayan realizado 
+algún envío con cantidad mayor que la media de los envíos realizados 
+para el componente a que corresponda dicho envío.
 
-PROVEEDORES
-<id_prov PK, prov_nombre, categoria, ciudad>
+(o) Seleccionar los identificadores de artículos 
+para los cuales todos sus componentes se
+fabrican en una misma Ciudad.  X
 
-COMPONENTES
-<id_comp PK, comp_nombre, color, peso, ciudad >
+(p) Seleccionar los identificadores 
+de artículos para los que se provean envíos de todos los
+componentes existentes en la base de datos. 
 
-ARTICULOS
-<id_art PK, art_nombre, ciudad>
 
-ENVIOS
-<id_prov PK FK, id_comp PK FK, id_art PK FK, cantidad>
 
-(o) Seleccionar los identificadores de artículos para los cuales todos sus componentes se
-fabrican en una misma Ciudad. X
 
-(p) Seleccionar los identificadores de artículos para los que se provean envíos de todos los
-componentes existentes en la base de datos X
+
 
 
 
 a) 
-
 
 SELECT 
     *
@@ -332,105 +327,135 @@ i)
     ORDER BY 
         p.id_prov ASC;
 
-j) 
-    SELECT 
-        e.id_prov AS proveedor,
-        COUNT(DISTINCT e.id_art) AS articulos_distintos,
-        SUM  (e.cantidad)        AS cantidad_total
-    FROM   
+
+j)
+    SELECT DISTINCT 
+        e.id_prov              AS proveedor_2,
+        COUNT(DISTINCT id_art) AS articulos_distintos_suministrados,
+        SUM  (e.cantidad)      AS cantidad_total 
+    FROM 
         envios e 
-    WHERE
-        e.id_prov ILIKE 'P2'
+    WHERE 
+        e.id_prov ILIKE 'p2'
     GROUP BY 
         e.id_prov;
 
 k)
     SELECT 
-        e.id_prov,
-        MAX(e.cantidad) AS cantidad_maxima 
-    FROM 
-        envios e
-    GROUP BY 
-        e.id_prov;
-l)
-
-SELECT 
-    e.id_art, 
-    e.id_comp,
-    SUM(e.cantidad) AS cantidad_total
-FROM 
-    envios e 
-GROUP BY 
-    e.id_art, e.id_comp;
-
-m)
-SELECT 
-    c.comp_nombre,
-FROM  
-    envios e 
-    JOIN componentes c ON e.id_comp = c.id_comp
-GROUP BY 
-    c.comp_nombre 
-HAVING SUM(e.cantidad) > 500;
-
-n)
-    SELECT  
-        e.id_art,
-        e.cantidad AS cantidad_total_mayor_a_420
+        e.id_prov       AS proveedores,
+        
+        MAX(e.cantidad) AS cantidad_maxima_suministrada
     FROM 
         envios e 
-        JOIN componentes c ON e.id_comp = c.id_comp 
     GROUP BY 
-        e.id_art, e.cantidad 
-    HAVING AVG(e.cantidad) > 420;
+        e.id_prov; 
 
-ñ)
-    SELECT DISTINCT 
-        e.id_prov,
+-- maxima cantidad suministrada en todos los envios.
+
+SELECT  
+        MAX(e.cantidad) AS cantidad_maxima_suministrada
     FROM 
-        (
-            SELECT 
-                id_comp, avg(cantidad) AS cantidad_media
-            FROM 
-                envios 
-            GROUP BY id_comp 
-        ) 
-        AS comp_media
-        
-    JOIN  envios e ON e.id_comp = comp_media.id_comp 
-    WHERE 
-        e.cantidad > comp_media.cantidad_media
+        envios e;
+
+l)
+    SELECT 
+        e.id_comp,
+        e.id_art,
+        SUM(e.cantidad)
+    FROM 
+        envios e 
+    GROUP BY 
+        e.id_comp, e.id_art
     ORDER BY 
-        e.id_prov ASC;
-    
+        e.id_comp ASC;
 
 
-SELECT DISTINCT id_prov
-FROM ENVIOS e JOIN (SELECT id_comp, avg(cantidad) AS media
-                  
-                  FROM ENVIOS 
-                  
-                  GROUP BY id_comp) compmedia
-                        
-                        ON e.id_comp = compmedia.id_comp
+m)
 
-WHERE e.cantidad > compmedia.media;
-
-
-o) 
-
-SELECT 
-    a.id_art
+SELECT DISTINCT
+    e.id_comp,e.cantidad 
 FROM 
     envios e 
-    JOIN componentes c ON e.id_comp = c.id_comp 
-    JOIN articulos   a ON a.id_art  = e.id_art 
-WHERE 
-    a.ciudad = c.ciudad;
-    
-P)
+GROUP BY 
+    e.id_comp, e.cantidad
+HAVING SUM(e.cantidad) > 500;
 
-SELECT
-    a.id_art
+
+
+ id_comp 
+---------
+ C4
+ C5
+ C3
+ C1
+
+- - - - - - - - - - - -
+
+
+n)
+SELECT DISTINCT
+    id_art 
 FROM 
+    ( 
+      SELECT 
+        id_comp
+      FROM 
+        envios 
+      GROUP BY 
+        id_comp
+      HAVING 
+        AVG(cantidad) > 420
+    ) AS componentes_media_mayor_a_420
+    JOIN
+    envios e ON e.id_comp = componentes_media_mayor_a_420.id_comp
+ORDER BY id_art ASC;
+
+
+ñ)
+
+SELECT 
+    e.id_prov
+FROM 
+    envios e 
+    JOIN (
+        SELECT 
+            e.id_comp ,AVG(cantidad) AS media 
+        FROM 
+            envios 
+    ) AS comp_media
+    ON e.id_comp = comp_media.id_comp
+    
+    WHERE 
+    e.cantidad > comp_media.media;
+
+o)
+
+SELECT 
+    id_art 
+FROM 
+    envios e 
+    JOIN componentes comps ON e.id_comp = comps.id_comp 
+GROUP BY 
+    id_art 
+HAVING 
+    COUNT(DISTINCT ciudad) = 1;
+
+p)
+
+
+SELECT DISTINCT
+    e.id_art 
+FROM 
+    envios e 
+WHERE 
+    e.id_comp
+        IN 
+            (
+                SELECT DISTINCT 
+                    id_comp
+                FROM
+                    componentes 
+            );
+
+     
     

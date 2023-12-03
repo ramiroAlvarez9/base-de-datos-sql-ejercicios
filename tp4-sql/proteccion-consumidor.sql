@@ -142,15 +142,16 @@ GROUP BY
     comercios.barrio;
     
 (g) Sobreprecios: Obtener la lista de los productos que sufrieron aumentos 
-    en las entre dos fechas diferentes (no necesariamente consecutivas).          X
+    en las entre dos fechas diferentes (no necesariamente consecutivas).          
 
 SELECT 
-    p.pid,
-    pr.comercio 
-FROM    
-      precio pr JOIN producto p   ON p.pid  = pr.pid ;
-
-
-
+    p1.pid 
+FROM 
+    precio p1 
+    JOIN precio p2 ON p1.pid = p2.pid 
+WHERE 
+    p1.fecha_registro > p2.fecha_registro 
+        AND 
+    p1.precio > p2.precio;
 
 

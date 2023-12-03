@@ -34,7 +34,7 @@ INSERT INTO alumno (nroAlumno, nombre, grupo)
                           (1010, 'Daniel', 'BD-15');
 
 -- Inserciones en la tabla PRACTICA
-INSERT INTO practica(nroPractica, curso, fecha) VALUES (1, 'C1', '2020-12-03 00:00:00'),
+INSERT INTO practica(nroPractica, curso, fecha) VALUES (1, 'C1','2020-12-03 00:00:00'),
                                                       (2, 'C1', '2020-04-13 00:00:00'),
                                                       (3, 'C2', '2020-03-12 00:00:00'),
                                                       (4, 'C2', '2020-04-15 00:00:00'),
@@ -43,6 +43,8 @@ INSERT INTO practica(nroPractica, curso, fecha) VALUES (1, 'C1', '2020-12-03 00:
                                                       (7, 'C3', '2020-04-12 00:00:00'),
                                                       (8, 'C4', '2020-03-12 00:00:00'),
                                                       (9, 'C4', '2020-05-11 00:00:00');
+
+                                                
 
 -- inserciones en la tabla ENTREGA
 entrega 

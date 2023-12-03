@@ -169,10 +169,15 @@ MENU<codMenu, nombre>
 
 a) Listado de Menúes <codMenu, nombre> que tengan, o una comida especial, o una bebida que tenga
 menos de 100 calorías (o ambas).
+
 b) Listado de bebidas <codItem, cod, descripcion> que tengan la mismas calorías que centrimetrosCubicos.
-c) Listado de Guarnicion <codItem, codigo, descripcion> que no estén en ningún menú.
-d) Listado de Menúes <codMenu, nombre> que tienen solamente items con precios menores a <= $45
-y calorías <= 60.
+
+c) Listado de Guarnicion 
+    <codItem, codigo, descripcion> que no estén en ningún menú.
+
+d) Listado de Menúes 
+    <codMenu, nombre> 
+    que tienen solamente items con precios menores a <= $45 y calorías <= 60.
 
 a)
     SELECT
@@ -207,4 +212,80 @@ b)
         i.calorias = b.centimetroscubicos;
     
 
-c)
+d)
+
+SELECT 
+    menu.codMenu, menu.nombre 
+FROM 
+    item item 
+    JOIN itemenmenu itemenmenu ON item.codItem = itemenmenu.codItem
+    JOIN menu menu             ON menu.codMenu = itemenmenu.codMenu 
+
+WHERE 
+    item.precio <= 45 AND item.calorias <= 60
+
+EXCEPT 
+
+SELECT 
+    menu.codMenu, menu.nombre 
+FROM 
+    item item 
+    JOIN itemenmenu itemenmenu ON item.codItem = itemenmenu.codItem
+    JOIN menu menu             ON menu.codMenu = itemenmenu.codMenu 
+
+WHERE 
+    item.precio >= 45 OR item.calorias >= 60;
+
+-- solucion V2
+
+SELECT 
+    menu.codMenu, menu.nombre 
+FROM 
+    item item 
+    JOIN itemenmenu itemenmenu ON item.codItem = itemenmenu.codItem
+    JOIN menu menu             ON menu.codMenu = itemenmenu.codMenu 
+
+WHERE 
+    item.precio NOT IN 
+        (
+            SELECT precio 
+            FROM   item 
+            WHERE 
+                precio >= 45 
+        )
+        
+        AND
+
+    item.calorias NOT IN
+        (
+            SELECT calorias 
+            FROM   item 
+            WHERE  
+                   calorias >= 45
+        );
+
+
+
+c) 
+    SELECT 
+        g.codigo, g.codItem, g.centimetrosCubicos
+    FROM
+        guarnicion g 
+    
+    EXCEPT
+
+    SELECT 
+        g.codigo, g.codItem, g.centimetrosCubicos
+    FROM
+        guarnicion g 
+    
+        EXCEPT 
+
+    SELECT 
+        g.codigo, g.codItem, g.centimetrosCubicos
+
+    FROM 
+        guarnicion g
+        NATURAL JOIN itemenmenu itemenmenu
+        NATURAL JOIN menu menu;
+    
