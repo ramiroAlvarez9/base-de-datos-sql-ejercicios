@@ -1,0 +1,14 @@
+
+
+    
+    unDiccionario put at: key1: 001 , value: unLibro 
+
+    librosEnInvetario = 
+        {
+            001 -> unLibro ,
+            002 -> otroLibro ,
+            003 -> unLibroMas ,
+        }
+
+
+    librosEnInvetario 001 . unLibro 

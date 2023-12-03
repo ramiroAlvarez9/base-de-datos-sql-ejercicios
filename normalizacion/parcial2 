@@ -1,0 +1,164 @@
+Netflix necesita organizar sus series usando la siguiente bases de datos:
+SERIES 
+    <
+        nombreSerie, 
+        nroTemporada, 
+        protagonista, 
+        director, nroEpisodio, 
+        tituloCapitulo, origenDirector, 
+        totalFacturado, idiomaVO, 
+        idiomaST, 
+        sponsor, 
+        fechaEstreno, 
+        añoNacimiento, 
+        cantPremios, 
+        totalMinutos, 
+        productoSponsor
+>
+
+con los siguientes requerimientos:
+
+1. Cada serie se identifica en forma unívoca con su nombre.
+Cada serie tiene un solo protagonista, pero un protagonista puede serlo de varias series. 
+Por ejemplo, Calista Flockart
+fue protagonista de Ally Mc Beal y de Brothers & Sisters.
+Adicionalmente sabemos que cada serie tiene un solo idioma original, 
+pero un idioma original podría ser de varias
+series. 
+Por ejemplo, Game of Thrones y Legends of Tomorrow tienen al inglés como su idioma original.
+De cada serie, sabemos cuál es el total facturado. 
+El total facturado puede repetirse entre diferentes series. Por ejemplo,
+Game of Thrones y Legends of Tomorrow facturaron $ 200.000 dólares durante 2016.
+
+2. Cada serie tiene varias temporadas y cada temporada tiene varios episodios. 
+Los números de temporadas no se
+repiten en la misma serie, 
+pero pueden repetirse entre diferentes series. Los números de episodios pueden repetirse
+entre diferentes tempora>das de la misma o de diferentes series.
+
+3. Cada temporada de una serie tiene una fecha de estreno y 
+un idioma de subtítulo. Obviamente, las fechas de estreno
+y los idiomas de subtítulo pueden repetirse entre diferentes temporadas de diferentes series. 
+Por ejemplo, 
+Game of Thrones y Legends of Tomorrow se estrenaron el 1/1/2015 
+y ambas tenían al castellano como subtítulo.
+
+4. Sabemos que cada episodio de una temporada de una serie tiene un director 
+y un título. 
+Los directores y los títulos
+pueden repetirse entre diferentes capítulos de una misma 
+temporada de una misma serie, y 
+también entre diferentes
+episodios de diferentes temporadas de diferentes series. 
+Por ejemplo, Juan José Campanella dirigió el episodio 12 de la
+temporada 3 de Dr. House, y el episodio 3 de la temporada 8 de Law & Order. 
+Para dar un ejemplo de títulos, por ejemplo,
+el episodio 1 de la temporada 2 de Game of Thrones y el episodio 3 
+de la temporada 2 Legends of Tomorrow tienen como
+título “No Reason”
+
+5. De los directores sabemos de qué país de origen y cuál es su año de nacimiento. 
+Obviamente de un país pueden
+provenir varios directores y 
+en el mismo año pueden haber nacido varios directores. 
+Por ejemplo, Thomas McCarthy
+(director de Game of Thrones) y 
+Dermont Downs (director de Legends of Tomorrow) 
+nacieron en Estados Unidos en 1966.
+
+6. De cada protagonista, sabemos que cantidad de premios ha recibido. 
+Dos protagonistas diferentes pueden tener la
+misma cantidad de premios.
+
+7. Cada temporada de cada serie tiene varios sponsors. 
+De cada sponsor se sabe cuántos minutos en total debe aparecer
+y el producto (solo uno) de publicidad (remera, taza, mousepad, etc.) 
+en la temporada de la serie que sponsorea. 
+Lossponsors pueden repetirse entre diferentes temporadas de la misma o 
+diferentes series. 
+Así también, pueden repetirse
+los minutos y los productos entre diferentes sponsors en la misma o 
+en diferentes temporadas de la misma o diferentes
+series. Por ejemplo, Samsung y Sony fueron sponsors de la temporada 4 de la serie Games of Thrones y de la temporada
+3 de Legends of Tomorrow. En ambos casos, ambos sponsors debían aparecer 20 minutos y el producto de publicidad fue
+una taza
+
+
+DFS:
+
+   - 1) nombreSerie -> protagonista, idiomVO, totalFacturado ----
+    2) nombreSerie, nroTemporada -> fechaEstreno, idiomaST
+    3) nombreSerie, nroTemporada, nroEpisodio -> tituloCapitulo, director 
+    4) director ->  origenDirector, añoNacimiento
+   - 5) protagonista -> cantPremios ------
+    6) nombreSerie,nroTemporada, sponsor -> totalMinutos, productoSponsor
+
+
+CC: {nombreSerie,nroTemporada,nroEpisodio,sponsor}
+
+PK: <nombreSerie,nroTemporada,nroEpisodio,sponsor>
+
+PASO A 2FN: 
+
+R1 <nombreSerie PK ,protagonista, idiomVO, totalFacturado,cantPremio> -- Vale: DF1 y DF5, hasta 2FN
+
+R2 <nombreSerie PK FK , nroTemporada PK ,fechaEstreno, idiomaST > -- Vale: DF2, hasta 3FN 
+
+R3 <nombreSerie PK FK , nroTemporada PK FK , nroEpisodio PK , tituloCapitulo, director, origenDirector, añoNacimiento> Vale: DF3 y DF4, hasta 2FN.
+
+R4 <nombreSerie PK FK ,nroTemporada PK FK , sponsor PK, totalMinutos, productoSponsor > Vale: DF6, hasta 3FN 
+
+RES <nombreSerie PK FK ,nroTemporada PK FK ,nroEpisodio PK FK ,sponsor PK FK> -- Vale: hasta 3FN
+
+PASO A 3FN:
+
+    R1_1 < nombreSerie  PK , totalFacturado, idiomVO, protagonista FK  >
+    R2_2 < protagonista PK , cantPremios>
+    R2_3 < nombreSerie PK FK , nroTemporada PK FK , nroEpisodio PK , tituloCapitulo, director FK>
+    R2_4 < director PK , origenDirector, añoNacimiento >
+
+
+
+RELACIONES FINALES HASTA 3FN: 
+    {R2,R4, R1_1, R2_2, R2_3, R2_4, RES }
+
+4FN:
+
+    CC = PK {nombreSerie PK FK ,nroTemporada PK FK, nroEpisodio PK FK ,sponsor PK FK, tecnicoSonido PK , ciudadSerie PK , actorSecundario PK }
+
+    
+    NUEVA RELACION: 
+        <nombreSerie PK FK ,nroTemporada PK FK, nroEpisodio PK FK ,sponsor PK FK, tecnicoSonido PK , ciudadSerie PK , actorSecundario PK >  
+
+DMS:
+    1) nombreSerie,nroTemporada,nroEpisodio -> -> tecnicoSonido
+    2) nombreSerie ->-> ciudadSerie 
+    3) nombreSerie,nroTemporada,nroEpisodio ->-> actorSecundario
+
+    PASO A 4FN: 
+        
+        R4_1 <nombreSerie PK ,nroTemporada PK ,nroEpisodio PK ,tecnicoSonido PK >
+        R4_2 <nombreSerie PK FK , ciudadSerie PK >
+        R4_3 <nombreSerie PK FK ,nroTemporada PK FK  ,nroEpisodio PK FK , actorSecundario PK>
+        RES4 <nombreSerie PK FK ,nroTemporada PK FK, nroEpisodio PK FK ,sponsor PK FK> 
+
+-------------------------------------------------------------------------
+
+SERIES 
+
+1RA FORMA NORMAL: 
+    1) < empresa, episodio, serie >
+    2) No, porque tiene atributos multivaluados y compuestos 
+    3) 
+        R1 <empresa PK, episodio PK, serie PK, Mes_estreno, anio_estreno >
+        R2 <empresa PK FK, episodio PK FK, serie PK FK, apariciones PK>
+        R3 <empresa PK FK, episodio PK FK, serie PK FK, subtitulos PK >
+        
+BANCO:
+
+    1) <codBanco, nombreBanco, nroCuenta >
+    2) No, por que tiene atributos multivaluados y compuestos 
+    3) R1 < codBanco PK ,  nombreBanco PK , nroCuenta PK, prestamo, prestamo_fecha, ciudadBanco >
+       R2 < codBanco PK ,  nombreBanco PK , nroCuenta PK, tarjetas PK> 
+       R3 < codBanco PK ,  nombreBanco PK , nroCuenta PK, saldos_ultimos_meses PK >
+

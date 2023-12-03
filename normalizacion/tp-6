@@ -1,0 +1,132 @@
+Ejercicio 2: Primera Forma Normal
+
+Para los siguientes esquemas:
+
+a. Identifique la clave de la relación.
+b. ¿La relación está en Primera Forma Normal? Justifique su respuesta.
+c. Si la relación no está en Primera Forma Normal, ¿cómo llevaría esta relación a esta forma normal? Explicite
+la división de la relación, si corresponde.
+
+
+2.
+
+
+a) PK : <nrolegajo>
+b) no, ya que posee atr multivaluados
+c) CIUDAD   <nro_legajo PK, ciudad PK >
+   MATERIA  <nro_legajo PK , materia PK >
+   PROFESOR <nro_legajo PK, nyap> 
+
+
+4. -- OSUNQ
+
+a) PK: <codFam, codInd>
+b) No, ya que posee atributos multivaluados
+c) PERSONA         <codFam PK,codInd PK,nyap>
+   MEDICOS_FAMILIA <codFam PK ,codInd PK ,medicos_habilitados PK>
+   FAMILIA_FECHAS  <codFam PK, codInd PK, fecha_cons PK>
+   FAMILIA_INDIVIDUOS_E_INGRESOS <codFam PK, codInd PK,  anio_ingreso PK >
+
+   1) UNA TABLA CON CLAVE Y ATR ATOMICOS
+   2) UNA TABLA CON CLAVE Y ATR MULTIVALUADOS
+
+
+
+Ejercicio 3: Ejercicio de Conceptos Teóricos
+
+Supongamos que queremos registrar para una facultad los datos personales de los alumnos, las materias en las
+que se inscribieron y los exámenes que rindieron. Para esto definimos el esquema de relación FACULTAD y su
+conjunto de dependencias funcionales:
+
+FACULTAD<nroAlumno, nombre, materia, fechaInscripcion, fechaExamen, nota>
+nroAlumno → nombre (no puede haber dos alumnos con el mismo NroAlumno)
+nroAlumno, materia → fechaInscripcion (se pude inscribir una sola vez en cada materia)
+nroAlumno, materia, fechaExamen → nota (hay una sola nota por examen)
+
+Nota: Bajo las condiciones que muestran las dependencias funcionales, observamos que un alumno podría
+rendir varias veces la misma materia, porque no está la DF NroAlumno, Materia→ FechaExamen.
+
+
+
+
+
+a) Identifique la clave primaria de la relación.
+   <nroAlumno, materia, fechaExamen>
+
+b) ¿Cuál de los siguientes grupo de relaciones no tiene pérdida de información? Justifique su respuesta
+   
+   1. 
+      ALUMNO<nroAlumno, nombre>
+
+      INSCRIPTO<nroAlumno, materia, fechaInscripcion>
+
+      EXAMEN<materia, fechaExamen>
+
+      RESULTADO<nroAlumno, nateria, nota>
+   
+   2. 
+      ALUMNO<nroAlumno, nombre>
+
+      INSCRIPTO<nroAlumno, materia, fechaInscripcion>
+
+      EXAMEN<nroAlumno, materia, fechaExamen, nota>
+
+
+
+
+
+Ejercicio 6: Dependencias Funcionales
+
+Para cada esquema dado:
+1. Suponer que las relaciones ya están en Primera Forma Normal (es decir, que no hay atributos multivaluados).
+2. Encontrar las dependencias funcionales.
+3. Determinar la/s clave/s candidata/s.
+4. Indicar la clave primaria.
+
+
+
+b) EMPLEADOS (1)
+
+EMPLEADO <DNI, nyAp, dir, nro_empleado, departamento>
+donde:
+   
+   Los números de empleados no se repiten dentro del mismo departamento.
+   
+   Cada empleado tiene solamente un DNI.
+   
+   El empleado trabaja en un solo departamento.
+   
+   Una misma persona no puede tener más de un número de empleado asignado.
+   
+   En un domicilio pueden vivir más de un empleado, pero un empleado tiene un único domicilio.
+   
+   En un departamento pueden trabajar muchos empleados. Entre diferentes departamentos, pueden repetirse los números de empleados (identificando a diferentes empleados en diferentes departamentos).
+
+
+DFS: 
+   1) DNI -> depto, nro_empleado, dir, nyap
+   2) nro_empleado  , depto -> DNI, dir, nyAp 
+
+CC : {<DNI PK>, <nro_empleado PK , departamento PK>}
+PK : <nro_empleado PK , departamento PK>
+
+
+ GUARDERIA “YBSA”
+
+      GUARDERIA
+      <  
+         dniPadre, nombrePadre, domicilioPadre, 
+         nombreNiño, fnacNiño, grupoNiño, 
+         comidaGrupo, fechaPago, montoPago
+      >
+   
+   DFS:
+   
+      1) dniPadre -> nombrePadre, domicilioPadre
+      2) dniPadre, nombreNiño -> fnacNiño, grupoNiño
+      3) grupoNiño -> comidaGrupo
+      4) dniPadre, nombreNiño, fechaPago-> montoPago 
+
+
+      CC : {<dniPadre, nombreNiño, fechaPago>}
+      PK : {<dniPadre, nombreNiño, fechaPago>}

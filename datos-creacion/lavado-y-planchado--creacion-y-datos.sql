@@ -10,7 +10,7 @@ CREATE TABLE sucursal (
 );
 
 CREATE TABLE lavarropas (
-  codlvvarropas INT NOT NULL PRIMARY KEY,
+  codlavarropas INT NOT NULL PRIMARY KEY,
   marca varchar(20) NOT NULL,
   origen varchar(3) NOT NULL default 'ARG',
   capacidad INT NOT NULL,

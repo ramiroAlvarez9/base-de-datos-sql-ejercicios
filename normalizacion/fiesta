@@ -1,0 +1,52 @@
+FIESTA <Nro_salon, direccion, capacidad, fecha_fiesta, nom_contratante,
+cant_invitados, nombre_invitado, cant_mesas, mesa_invitado,
+dir_contratante, dni_invitado>
+
+a) El atributo Nro_salon es un código único de salón en esta base de datos, es decir no existen dos salones
+   con el mismo código. Cada salón se ubica en una dirección única y tiene una capacidad máxima. En una
+   misma dirección puede haber más de un salón, y la capacidad puede repetirse entre diferentes salones.
+
+b) En cada salón se realiza una sola fiesta por día.
+
+c) En un día puede haber varias fiestas en diferentes salones.
+
+d) Para cada fiesta puede figurar más de un contratante. Cada contratante declara una sola dirección por
+   fiesta.
+
+e) Un contratante puede hacer distintas fiestas. En distintas fiestas el mismo contratante puede figurar con
+   diferentes direcciones.
+
+f) Cada fiesta tiene asociado una cantidad específica de invitados.
+
+g) Cada invitado tiene asociado un número de mesa que depende de cada fiesta.
+
+h) La cantidad de mesas del salón varía para cada fiesta.
+   Una persona puede ir a más de una fiesta en el mismo salón en diferentes fechas.
+
+
+  DFS:
+
+  1) Nro_salon -> direccion, capacidad V
+  2) nom_contratante, Nro_salon, fecha_fiesta -> dir_contrante x
+  3) Nro_salon, fecha_fiesta -> cant_invitados, cant_mesas v
+  4) dni_invitado, nombre_invitado -> mesa_invitado x
+
+
+
+  CORRECCION
+
+  1) Nro_salon -> direccion, capacidad 
+  2) #salon, fecha_fiesta -> cant_invitados, cant_mesas 
+  3) #salon, fecha_fiesta, dni_invitado -> mesa_invitado
+  4) dni_invitado -> nombre_invitado
+  5) # salon, fecha_fiesta, nombre_contratante -> dir_contratante
+
+  
+  SALON <PK nro_salon, direccion, capacidad > #Vale DF1, hasta 3fn .
+  FIESTA < PK nro_salon, PK fecha_fiesta, cant_invitados, cant_mesas > # Vale: DF2, hasta 3FN . 
+  FIESTA_INVITADOS < PK nro_salon, PK fecha_fiesta, PK dni_invitado, mesa_invitado > # vale: DF3, hasta 3FN.
+  INVITADO <PK dni_invitado, nombre_invitado > # Vale: DF4, hasta 3FN .
+  CONTRATANTE <PK sallon, PK fecha_fiesta, PK nombre_fiesta, dir_contratante > # Vale: DF5, hasta 3FN . 
+
+
+  

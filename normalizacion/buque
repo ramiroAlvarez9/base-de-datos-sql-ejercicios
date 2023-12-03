@@ -1,0 +1,154 @@
+
+BUQUE <Nom_buque, NyAp_dueño, DNI_Dueño, tipo_buque, tonelaje, tipo_casco,
+#viaje, #Puerto_Origen, #Puerto_Destino, Nom_País_Puerto_Destino,
+Nombre_Pais_Puerto_Origen, Posicion_Actual, Fecha_Posicion_Actual, NyAp_Pasajero,
+DNI_Pasajero, Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero>
+donde:
+
+a) El #viaje es un número consecutivo que identifica cada partida de cada buque.
+b) Un buque hace varios viajes.
+c) El #viaje se repite para distintos buques
+d) Un buque puede tener varios dueños.
+e) El nombre del buque es único.
+f) Cada buque es de un solo tipo de buque.
+g) El tonelaje y el casco están determinados por el tipo de buque.
+h) Un buque reporta su posición una vez por día independientemente del viaje.
+i) Cada viaje de un buque tiene un puerto origen, un puerto destino y varios puertos intermedios.
+j) Los buques transportan varios pasajeros.
+k) Un pasajero tiene un solo DNI y una única dirección independientemente del viaje.
+l) Un buque en su viaje puede pasar por varios puertos intermedios donde los pasajeros pueden abordar el buque.
+m) Cada pasajero tiene un puerto de inicio y un puerto final en su viaje. Los puertos donde embarcan o
+    desembarcan los pasajeros no son necesariamente los mismos que el de inicio o final del viaje.
+o) Cada puerto (sea origen o destino de viaje o pasajero) tiene un identificador único, y un nombre único
+   asociado a cada identificador. Sin embargo, los nombres pueden repetirse entre diferentes puertos.
+
+DFS:
+
+    1) Nom_buque -> tipo_buque
+    2) tipo_buque -> tonelaje, tipo_casco 
+    3) Nroviaje, Nom_buque, Fecha_Posicion_Actual -> Posicion_Actual
+    4) NroViaje, Nom_buque -> #Puerto_Origen, #Puerto_Destino
+    5) DNI_Pasajero -> NyAp_Pasajero, Dir_Pasajero
+    6) DNI_Dueño -> NyAp_dueño
+    7) NroViaje, Nom_buque, DNI_Pasajero -> Puerto_Inicio_Pasajero, Puerto_Final_Pasajero
+    8) NroPuerto_Origen -> Nombre_Pais_Puerto_Origen
+    9) NroPuerto_Destino -> Nombre_Pais_Puerto_Destino  
+
+    {A DETERMINANTES} - {ADETERMINADOS} U {ATR NO DETERMINANTES NI DETERMINADOS }  
+
+
+    CC:
+        {Nom_buque, tipo_buque, NroViaje,  Fecha_Posicion_Actual ,DNI_Pasajero, DNI_Dueño, NroPuerto_Origen, NroPuerto_Destino}
+            -
+        {   tipo_buque, tonelaje, casco, Posicion_Actual, NroPuerto_Origen, NroPuerto_Destino, NyAp_Pasajero,
+            Dir_Pasajero, NyAp_dueño, Puerto_Inicio_Pasajero, Puerto_Final_Pasajero, Nombre_Pais_Puerto_Origen
+            Nombre_Pais_Puerto_Destino
+        }
+            U
+        {}
+    => CC = {< Nom_buque, NroViaje, DNI_Pasajero, DNI_Dueño,Fecha_Posicion_Actual >}
+
+    PK: < Nom_buque, NroViaje, DNI_Pasajero, DNI_Dueño,Fecha_Posicion_Actual >
+
+PROCESO A 2DA FORMA NORMAL:
+BUQUE < PK Nom_buque, NyAp_dueño, DNI_Dueño, tipo_buque, tonelaje, tipo_casco,
+#viaje, #Puerto_Origen, #Puerto_Destino, Nom_País_Puerto_Destino,
+Nombre_Pais_Puerto_Origen, Posicion_Actual, Fecha_Posicion_Actual, NyAp_Pasa
+DNI_Pasajero, Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero>
+
+# se toma DF1 (ABSORBE DF2 POR TRANS ) y se resta a BUQUE 
+
+Nom_buque -> tipo_buque
+
+BUQUE < PK Nom_buque, tipo_buque, tonelaje, tipo_casco >
+
+# Se resta los atributos determinados a BUQUE: 
+    
+BUQUE - { tipo_buque, tonelaje, tipo_casco }
+
+RES1 = < Nom_buque, NyAp_dueño, DNI_Dueño, #viaje, #Puerto_Origen, #Puerto_Destino, Nom_País_Puerto_Destino,
+Nombre_Pais_Puerto_Origen, Posicion_Actual, Fecha_Posicion_Actual, NyAp_Pasa
+DNI_Pasajero, Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero >
+
+# se toma DF3 y se resta a RES1
+
+POSICION_DE_BUQUE < PK Nroviaje, PK Nom_buque,PK Fecha_Posicion_Actual, Posicion_Actual >
+
+RES 2 = RES1 - {Posicion_Actual}
+
+RES2 = < Nom_buque, NyAp_dueño, DNI_Dueño, #viaje, #Puerto_Origen, #Puerto_Destino, Nom_País_Puerto_Destino,
+Nombre_Pais_Puerto_Origen ,Fecha_Posicion_Actual, NyAp_Pasa
+DNI_Pasajero, Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero >
+
+#Se toma DF4 y se resta a RES2
+    4) NroViaje, Nom_buque -> #Puerto_Origen, #Puerto_Destino
+
+    PUERTOS_DE_BUQUE < PK NroViaje, PK Nom_buque, #Puerto_Origen, #Puerto_Destino >
+
+RES3 = RES2 - {#puerto_origen, #puerto_destino}
+
+RES3 = 
+< Nom_buque, NyAp_dueño, DNI_Dueño, #viaje,Nom_País_Puerto_Destino,
+Nombre_Pais_Puerto_Origen ,Fecha_Posicion_Actual, NyAp_Pasa
+DNI_Pasajero, Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero >
+
+#Se toma DF5 y se resta a RES3
+
+    5) DNI_Pasajero -> NyAp_Pasajero, Dir_Pasajero
+
+    PASAJERO < PK DNI_Pasajero , NyAp_Pasajero , Dir_Pasajero >
+
+RES4 = RES3 - {NyAp_Pasajero, Dir_Pasajero}
+RES4 =
+< 
+    Nom_buque, NyAp_dueño, DNI_Dueño, #viaje,Nom_País_Puerto_Destino,
+    Nombre_Pais_Puerto_Origen ,Fecha_Posicion_Actual, 
+    Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero 
+>
+
+#Se toma DF5 y se resta a RES4
+
+DNI_Dueño -> NyAp_dueño 
+    DUENIO_BUQUE < DNI_Dueño PK, NyAp_dueño >
+
+RES5 = RES4 - {NyAp_dueño}
+RES5 = 
+< 
+    Nom_buque, DNI_Dueño, #viaje,Nom_País_Puerto_Destino,
+    Nombre_Pais_Puerto_Origen ,Fecha_Posicion_Actual, 
+    Dir_Pasajero, #Puerto_Inicio_Pasajero, #Puerto_Final_Pasajero 
+>
+
+#Se toma DF7 y se resta a RES5
+
+    7) NroViaje, Nom_buque, DNI_Pasajero -> Puerto_Inicio_Pasajero, Puerto_Final_Pasajero
+
+< PK NroViaje, PK Nom_buque, PK DNI_Pasajero , Puerto_Inicio_Pasajero, Puerto_Final_Pasajero >
+
+RES6 = RES5 - {Puerto_Inicio_Pasajero, Puerto_Final_Pasajero }
+RES6 =
+<   Nom_buque, DNI_Dueño, #viaje,Nom_País_Puerto_Destino,
+    Nombre_Pais_Puerto_Origen ,Fecha_Posicion_Actual, 
+    Dir_Pasajero  
+>
+
+RELACIONES FINALES HASTA 2FN
+{
+    BUQUE < PK Nom_buque, tipo_buque, tonelaje, tipo_casco >
+    
+    POSICION_DE_BUQUE < PK Nroviaje, PK Nom_buque,PK Fecha_Posicion_Actual, Posicion_Actual >
+    
+    PUERTOS_DE_BUQUE < PK NroViaje, PK Nom_buque, #Puerto_Origen, #Puerto_Destino ,NroPuerto_Origen,Nombre_Pais_Puerto_Origen, NroPuerto_Destino,Nombre_Pais_Puerto_Destino >
+    
+    PASAJERO < PK DNI_Pasajero , NyAp_Pasajero , Dir_Pasajero >
+    
+    DUENIO_BUQUE < PK DNI_Dueño , NyAp_dueño >
+    
+    PASAJERO_BUQUE < PK NroViaje, PK Nom_buque, PK DNI_Pasajero , Puerto_Inicio_Pasajero, Puerto_Final_Pasajero >
+    
+    RES6 <   PK Nom_buque, PK DNI_Dueño, PK #viaje, PK Fecha_Posicion_Actual, Nom_País_Puerto_Destino, Nombre_Pais_Puerto_Origen ,Dir_Pasajero >
+
+}
+
+
+
