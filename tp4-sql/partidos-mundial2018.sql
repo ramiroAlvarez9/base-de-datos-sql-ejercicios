@@ -84,21 +84,6 @@ FROM   tarjetaroja tr;
 (e) Obtener los nombres de jugadores expulsados por doble amarilla.
     
 
- idpartido | nombreamonestado  | minuto        
------------+-------------------+--------
-    103251 | Wyatt Mercer      |     14
-    103254 | Wesley Koch       |     15    jugadores que aparecen mas de 2 veces en la tabla
-    103255 | Christian Serrano |     16    
-    103256 | Jameson Campos    |     17
-    103257 | Lester Fuller     |     18
-    103257 | Kennedy Castro    |     19
-    103259 | Stewart Joyce     |     20
-    103259 | Giacomo Leblanc   |      2
-    103259 | Giacomo Leblanc   |     43
-
- 
-
-???????????????????????
 
 
 (f) Obtener la tabla de equipos ordenados de mayor a menor de acuerdo a la cantidad de

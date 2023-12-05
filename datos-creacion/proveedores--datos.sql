@@ -2,7 +2,6 @@
 #PARA ESTE EJERCICIO NO SE PROVEEN LAS CREACIONES DE LAS TABLAS.
 
 INSERT INTO proveedores
-	(idprov, provnombre, categoria, ciudad)
 VALUES
 	('P1', 'Carlos', 20, 'La Plata'),
 	('P2', 'Juan', 10, 'Cap. Fed.'),
@@ -12,7 +11,6 @@ VALUES
 ;
 
 INSERT INTO componentes
-	(idcomp, compnombre, color, peso, ciudad)
 VALUES
 	('C1', 'X3A', 'Rojo', 12, 'La Plata'),
 	('C2', 'B85', 'Verde', 17, 'Cap. Fed.'),
@@ -23,7 +21,6 @@ VALUES
 ;
 
 INSERT INTO articulos
-	(idart, artnombre, ciudad)
 VALUES
 	('T1', 'Clasificadora', 'Cap. Fed.'),
 	('T2', 'Perforadora', 'Quilmes'),
@@ -35,7 +32,6 @@ VALUES
 ;
 
 INSERT INTO envios
-	(idprov, idcomp, idart, cantidad)
 VALUES
 	('P1', 'C1', 'T1', 200),
 	('P1', 'C1', 'T4', 700),
